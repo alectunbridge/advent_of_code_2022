@@ -3,6 +3,8 @@
  */
 package advent_of_code_2022;
 
+import java.util.Collections;
+import java.util.LinkedList;
 import java.util.List;
 
 public class DayOne {
@@ -13,6 +15,42 @@ public class DayOne {
     }
 
     public int solvePart1() {
-        throw new UnsupportedOperationException("Not yet implemented!");
+
+        int totalCalories = 0;
+        int highestCalories = 0;
+        for (String line : inputLines) {
+
+            if (line.equals("")) {
+                if (totalCalories > highestCalories) {
+                    highestCalories = totalCalories;
+                }
+                totalCalories = 0;
+            } else {
+                totalCalories += Integer.parseInt(line);
+            }
+        }
+
+        return highestCalories;
+    }
+
+    public int solvePart2() {
+
+        int totalCalories = 0;
+        List<Integer> elves = new LinkedList<>();
+        for (String line : inputLines) {
+            if (line.equals("")) {
+                elves.add(totalCalories);
+                totalCalories = 0;
+            } else {
+                totalCalories += Integer.parseInt(line);
+            }
+        }
+        if (totalCalories > 0) {
+            elves.add(totalCalories);
+        }
+
+        Collections.sort(elves, Collections.reverseOrder());
+
+        return elves.get(0) + elves.get(1) + elves.get(2);
     }
 }
