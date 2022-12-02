@@ -10,9 +10,41 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class DayOneTest {
-    @Test void someLibraryMethodReturnsTrue() {
+
+
+    @Test
+    void part1And2Example() {
+        DayOne dayOne = new DayOne(List.of(
+                "1000",
+                "2000",
+                "3000",
+                "",
+                "4000",
+                "",
+                "5000",
+                "6000",
+                "",
+                "7000",
+                "8000",
+                "9000",
+                "",
+                "10000"
+        ));
+        assertThat(dayOne.solvePart1()).isEqualTo(24000);
+        assertThat(dayOne.solvePart2()).isEqualTo(45000);
+    }
+
+    @Test
+    void solvePart1() {
         List<String> inputLines = Utils.readInputLinesFromFile("day_one.txt");
         DayOne dayOne = new DayOne(inputLines);
-        assertThat(dayOne.solvePart1()).isEqualTo(Integer.MAX_VALUE);
+        assertThat(dayOne.solvePart1()).isEqualTo(74394);
+    }
+
+    @Test
+    void solvePart2() {
+        List<String> inputLines = Utils.readInputLinesFromFile("day_one.txt");
+        DayOne dayOne = new DayOne(inputLines);
+        assertThat(dayOne.solvePart2()).isEqualTo(212836);
     }
 }

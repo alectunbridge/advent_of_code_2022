@@ -3,6 +3,8 @@
  */
 package advent_of_code_2022;
 
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 public class DayOne {
@@ -13,6 +15,38 @@ public class DayOne {
     }
 
     public int solvePart1() {
-        throw new UnsupportedOperationException("Not yet implemented!");
+        int max_calories = 0;
+        int totalCalories = 0;
+        for (String line : inputLines) {
+            if (line.isEmpty()) {
+                if (totalCalories > max_calories) {
+                    max_calories = totalCalories;
+                }
+                totalCalories = 0;
+            } else {
+                totalCalories += Integer.parseInt(line);
+            }
+        }
+        if (totalCalories > max_calories) {
+            max_calories = totalCalories;
+        }
+
+        return max_calories;
+    }
+
+    public int solvePart2() {
+        List<Integer> result = new ArrayList<>();
+        int totalCalories = 0;
+        for (String line : inputLines) {
+            if (line.isEmpty()) {
+                result.add(totalCalories);
+                totalCalories = 0;
+            } else {
+                totalCalories += Integer.parseInt(line);
+            }
+        }
+        result.add(totalCalories);
+
+        return result.stream().sorted(Comparator.reverseOrder()).limit(3).mapToInt(Integer::intValue).sum();
     }
 }
