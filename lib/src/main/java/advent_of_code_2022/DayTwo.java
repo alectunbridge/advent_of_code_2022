@@ -34,4 +34,48 @@ public class DayTwo {
         }
         return totalScore;
     }
+
+    public int solvePart2() {
+        int totalScore = 0;
+        for (String line : input) {
+            String playerOne = line.split(" ")[0];
+            String strategy = line.split(" ")[1];
+            switch (strategy) {
+                case "X" -> totalScore += 0;
+                case "Y" -> totalScore += 3;
+                case "Z" -> totalScore += 6;
+
+            }
+            String playerTwo = findPlayer2Move(playerOne, strategy);
+            switch (playerTwo) {
+                case "A" -> totalScore += 1;
+                case "B" -> totalScore += 2;
+                case "C" -> totalScore += 3;
+            }
+        }
+        return totalScore;
+    }
+
+    private String findPlayer2Move(String playerOne, String strategy) {
+        String result = "";
+        if (strategy.equals("Y")) {
+            return playerOne;
+        }
+        if (strategy.equals("X")) {
+            switch (playerOne) {
+                case "A" -> result = "C";
+                case "B" -> result = "A";
+                case "C" -> result = "B";
+            }
+        } else {
+            switch (playerOne) {
+                case "A" -> result = "B";
+                case "B" -> result = "C";
+                case "C" -> result = "A";
+            }
+        }
+        return result;
+    }
+
+
 }

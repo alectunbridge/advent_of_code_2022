@@ -27,16 +27,18 @@ public class DayTwoTest {
     }
 
     @Test
-    void part1Example() {
+    void part1And2Example() {
         DayTwo dayTwo = new DayTwo(List.of("A Y",
                 "B X",
                 "C Z"));
         assertThat(dayTwo.solvePart1()).isEqualTo(15);
+        assertThat(dayTwo.solvePart2()).isEqualTo(12);
     }
 
     @Test
-    void solvePart1() {
+    void solvePart1AndTwo() {
         DayTwo dayTwo = new DayTwo(Utils.readInputLinesFromFile("day_two.txt"));
-        assertThat(dayTwo.solvePart1()).isEqualTo(0);
+        assertThat(dayTwo.solvePart1()).isEqualTo(10718);
+        assertThat(dayTwo.solvePart2()).isEqualTo(14652);
     }
 }
