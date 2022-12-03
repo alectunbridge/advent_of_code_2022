@@ -26,7 +26,7 @@ public class DayThreeTest {
     }
 
     @Test
-    void part1ExampleAllLines() {
+    void part1AndPart2ExampleAllLines() {
         DayThree dayThree = new DayThree(List.of(
                 "vJrwpWtwJgWrhcsFMMfFFhFp",
                 "jqHRNqRjqzjGDLGLrsFMfFZSrLrFZsSL",
@@ -36,11 +36,13 @@ public class DayThreeTest {
                 "CrZsJsPPZsGzwwsLwLmpwMDw"
         ));
         assertThat(dayThree.solvePart1()).isEqualTo(157);
+        assertThat(dayThree.solvePart2()).isEqualTo(70);
     }
 
     @Test
-    void part1() {
+    void part1AndPart2() {
         DayThree dayThree = new DayThree(Utils.readInputLinesFromFile("day_three.txt"));
         assertThat(dayThree.solvePart1()).isEqualTo(8088);
+        assertThat(dayThree.solvePart2()).isEqualTo(2522);
     }
 }
