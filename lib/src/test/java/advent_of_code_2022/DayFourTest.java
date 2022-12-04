@@ -13,7 +13,7 @@ public class DayFourTest {
     }
 
     @Test
-    void part1Example() {
+    void part1And2Example() {
         DayFour dayFour = new DayFour(List.of(
                 "2-4,6-8",
                 "2-3,4-5",
@@ -23,11 +23,13 @@ public class DayFourTest {
                 "2-6,4-8"));
 
                 assertThat(dayFour.solvePart1()).isEqualTo(2);
+                assertThat(dayFour.solvePart2()).isEqualTo(4);
     }
 
     @Test
-    void solvePart1(){
+    void solvePart1And2(){
         DayFour dayFour = new DayFour(Utils.readInputLinesFromFile("day_four.txt"));
         assertThat(dayFour.solvePart1()).isEqualTo(498);
+        assertThat(dayFour.solvePart2()).isEqualTo(859);
     }
 }
