@@ -3,8 +3,8 @@
  */
 package advent_of_code_2022;
 
-import java.util.Collections;
-import java.util.LinkedList;
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 public class DayOne {
@@ -15,42 +15,38 @@ public class DayOne {
     }
 
     public int solvePart1() {
-
+        int max_calories = 0;
         int totalCalories = 0;
-        int highestCalories = 0;
         for (String line : inputLines) {
-
-            if (line.equals("")) {
-                if (totalCalories > highestCalories) {
-                    highestCalories = totalCalories;
+            if (line.isEmpty()) {
+                if (totalCalories > max_calories) {
+                    max_calories = totalCalories;
                 }
                 totalCalories = 0;
             } else {
                 totalCalories += Integer.parseInt(line);
             }
         }
+        if (totalCalories > max_calories) {
+            max_calories = totalCalories;
+        }
 
-        return highestCalories;
+        return max_calories;
     }
 
     public int solvePart2() {
-
+        List<Integer> result = new ArrayList<>();
         int totalCalories = 0;
-        List<Integer> elves = new LinkedList<>();
         for (String line : inputLines) {
-            if (line.equals("")) {
-                elves.add(totalCalories);
+            if (line.isEmpty()) {
+                result.add(totalCalories);
                 totalCalories = 0;
             } else {
                 totalCalories += Integer.parseInt(line);
             }
         }
-        if (totalCalories > 0) {
-            elves.add(totalCalories);
-        }
+        result.add(totalCalories);
 
-        Collections.sort(elves, Collections.reverseOrder());
-
-        return elves.get(0) + elves.get(1) + elves.get(2);
+        return result.stream().sorted(Comparator.reverseOrder()).limit(3).mapToInt(Integer::intValue).sum();
     }
 }
