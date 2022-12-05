@@ -2,8 +2,6 @@ package advent_of_code_2022;
 
 import org.junit.jupiter.api.Test;
 
-import java.util.List;
-
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class DayFiveTest {
