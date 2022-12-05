@@ -42,7 +42,11 @@ public class DayFiveTest {
     @Test
     void solvePart1() {
         DayFive dayFive = new DayFive(Utils.readInputLinesFromFile("day_five.txt"));
-        assertThat(dayFive.solvePart1()).isEqualTo("FCVRLMVQP");
+        assertThat(dayFive.solve(move1 -> {
+            for (int i = 0; i < move1.quantity(); i++) {
+                move1.to().push(move1.from().pop());
+            }
+        })).isEqualTo("FCVRLMVQP");
     }
     @Test
     void solvePart2() {
