@@ -31,4 +31,21 @@ public class DaySix {
         }
         return 0;
     }
+
+    public int solvePart2() {
+        String string = input.get(0);
+        for (int index = 0; index < string.length() - 13 ; index++) {
+            Set<Character> window = new HashSet<>();
+
+            for (int i = 0; i < 14; i++) {
+                char c = string.charAt(index+i);
+                window.add(c);
+            }
+
+            if (window.size() == 14) {
+                return index + 14;
+            }
+        }
+        return 0;
+    }
 }

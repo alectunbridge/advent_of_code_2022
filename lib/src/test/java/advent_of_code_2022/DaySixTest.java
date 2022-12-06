@@ -47,4 +47,17 @@ class DaySixTest {
         assertThat(daySix.solvePart1()).isEqualTo(1343);
     }
 
+    @Test
+    void solvePart2(){
+        DaySix daySix = new DaySix(Utils.readInputLinesFromFile("day_six.txt"));
+        assertThat(daySix.solvePart2()).isEqualTo(2193);
+    }
+
+    @Test
+    void part2Example() {
+        DaySix daySix = new DaySix(List.of(
+           "mjqjpqmgbljsphdztnvjfqwrcgsmlb"     
+        ));
+        assertThat(daySix.solvePart2()).isEqualTo(19);
+    }
 }
