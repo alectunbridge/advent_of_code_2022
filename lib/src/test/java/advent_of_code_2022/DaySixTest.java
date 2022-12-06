@@ -44,7 +44,7 @@ class DaySixTest {
     @Test
     void solvePart1(){
         DaySix daySix = new DaySix(Utils.readInputLinesFromFile("day_six.txt"));
-        assertThat(daySix.solvePart1()).isEqualTo(0);
+        assertThat(daySix.solvePart1()).isEqualTo(1343);
     }
 
 }
