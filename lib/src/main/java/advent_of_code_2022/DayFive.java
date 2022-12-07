@@ -18,7 +18,7 @@ public class DayFive {
         stacks = new ArrayList<>();
     }
 
-    public String solve(Consumer<Move> moveConsumer) {
+    public String solve(Consumer<Move> moveConsumer) { //
         boolean firstLine = true;
         for (String line : input) {
             if (firstLine) {
