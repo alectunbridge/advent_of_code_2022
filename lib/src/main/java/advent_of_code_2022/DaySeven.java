@@ -1,21 +1,18 @@
 package advent_of_code_2022;
 
-import com.google.common.base.MoreObjects;
-import com.google.common.cache.AbstractCache;
-
 import java.util.*;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 class Directory {
 
     private String name;
     private int size;
     private Set<String> subdirectories;
+    private Directory parent;
 
-    public Directory(String name) {
+    public Directory(String name, Directory parent) {
         this.subdirectories = new HashSet<>();
         this.name = name;
+        this.parent = parent;
     }
 
     public void addToSize(int size) {
@@ -23,7 +20,7 @@ class Directory {
     }
 
     public int getSize() {
-        int subDirectorySizes = subdirectories.stream().mapToInt(sub -> DaySeven.directories.get(sub).getSize()).sum();
+        int subDirectorySizes = subdirectories.stream().mapToInt(sub -> DaySeven.directories.get(name+sub).getSize()).sum();
         return size + subDirectorySizes;
     }
 
@@ -33,6 +30,10 @@ class Directory {
 
     public void addSubDirectory(String subdirectory) {
         subdirectories.add(subdirectory);
+    }
+
+    public Directory getParent() {
+        return parent;
     }
 }
 
@@ -47,13 +48,13 @@ public class DaySeven {
     }
 
     public int solvePart1() {
-        Directory currentDirectory = null;
+        Directory currentDirectory = new Directory("",null);
         for (int i = 0; i < input.size(); ) {
             if (input.get(i).matches("\\$ cd ..")){
-                System.out.println("skipping: " + input.get(i));
+                currentDirectory = currentDirectory.getParent();
             }
             if (input.get(i).matches("\\$ cd [^.]+")) {
-                currentDirectory = new Directory(input.get(i).split(" ")[2]);
+                currentDirectory = new Directory(currentDirectory.getName()+input.get(i).split(" ")[2],currentDirectory);
                 i++;
                 while (i<input.size()) {
                     if (input.get(i).matches("\\$ ls")){
