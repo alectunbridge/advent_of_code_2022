@@ -43,4 +43,28 @@ class DaySevenTest {
                                                 ));
         assertThat(daySeven.solvePart1()).isEqualTo(95437);
     }
+
+    @Test
+    void exampleSimple2() {
+        DaySeven daySeven = new DaySeven(List.of("$ cd /",
+                                                 "$ ls",
+                                                 "119163 sfrlrc.jtj",
+                                                 "226449 srdgnb.zbj",
+                                                 "dir dwhl",
+                                                 "$ cd dwhl",
+                                                 "$ ls",
+                                                 "dir dwhl",
+                                                 "$ cd dwhl",
+                                                 "$ ls",
+                                                 "50 ptssf"));
+
+        assertThat(daySeven.solvePart1()).isEqualTo(50);
+    }
+
+    @Test
+    void solvePart1() {
+        DaySeven daySeven = new DaySeven(Utils.readInputLinesFromFile("day_seven.txt"));
+        assertThat(daySeven.solvePart1()).isEqualTo(1343);
+    }
+
 }

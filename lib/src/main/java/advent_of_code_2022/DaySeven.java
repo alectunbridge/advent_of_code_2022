@@ -42,7 +42,9 @@ public class DaySeven {
         }
 
         public void cd(String directoryName) {
-            if (directoryName.equals("..")) {
+            if (directoryName.equals("/")) {
+                currentDirectory = rootDirectory;
+            } else if (directoryName.equals("..")) {
                 currentDirectory = currentDirectory.moveUpOneLevel();
             } else {
                 currentDirectory = currentDirectory.moveToDirectory(directoryName);
@@ -95,7 +97,7 @@ public class DaySeven {
         }
 
         public void addDirectory(String name) {
-            subdirectories.put(name, new Directory(name, parentDirectory));
+            subdirectories.put(name, new Directory(name, this));
         }
 
         public void addFile(String name, int size) {
@@ -107,9 +109,6 @@ public class DaySeven {
         }
 
         public Directory moveToDirectory(String name) {
-            if (name.equals(this.name)) {
-                return this;
-            }
             return subdirectories.get(name);
         }
 
@@ -135,7 +134,6 @@ public class DaySeven {
             }
             return totalSizeOfFilesInSubdirectories + sizeOfFilesInCurrentDirectory;
         }
-
     }
 
     public class File {
