@@ -80,6 +80,11 @@ public class DaySevenTest {
     @Test
     void part1() {
         DaySeven daySeven = new DaySeven(Utils.readInputLinesFromFile("day_seven.txt"));
-        assertThat(daySeven.solvePart1()).isEqualTo(0);
+        assertThat(daySeven.solvePart1()).isEqualTo(1886043);
+    }
+    @Test
+    void part2() {
+        DaySeven daySeven = new DaySeven(Utils.readInputLinesFromFile("day_seven.txt"));
+        assertThat(daySeven.solvePart2()).isEqualTo(3842121);
     }
 }

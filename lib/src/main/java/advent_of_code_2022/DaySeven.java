@@ -48,6 +48,11 @@ public class DaySeven {
     }
 
     public int solvePart1() {
+        constructDirectoryMap();
+        return directories.values().stream().mapToInt(Directory::getSize).filter(i->i<=100000).sum();
+    }
+
+    private void constructDirectoryMap() {
         Directory currentDirectory = new Directory("",null);
         for (int i = 0; i < input.size(); ) {
             if (input.get(i).matches("\\$ cd ..")){
@@ -74,6 +79,13 @@ public class DaySeven {
             i++;
         }
         directories.put(currentDirectory.getName(), currentDirectory);
-        return directories.values().stream().mapToInt(Directory::getSize).filter(i->i<=100000).sum();
+    }
+
+    public int solvePart2() {
+        constructDirectoryMap();
+        int freeSpace = 70000000 - directories.get("/").getSize();
+        int minDirectorySize = 30000000 - freeSpace;
+        return directories.values().stream().mapToInt(Directory::getSize).sorted().filter(size-> size >= minDirectorySize).findFirst().getAsInt();
+        
     }
 }
