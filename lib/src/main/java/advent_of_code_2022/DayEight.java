@@ -65,10 +65,10 @@ public class DayEight {
     public int solvePart2() {
         for (int y = 0; y < trees.length; y++) {
             for (int x = 0; x < trees[0].length; x++) {
-
+                
                 for (int treeY = y-1; treeY >= 0; treeY--) {
                     
-                }
+                }   
                 
                 
             }
