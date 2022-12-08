@@ -1,6 +1,9 @@
 package advent_of_code_2022;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class DaySeven {
     List<String> input;
@@ -12,22 +15,23 @@ public class DaySeven {
     public int solvePart1() {
         FileSystem fileSystem = new FileSystem();
 
-        for (String line : input) {
-            final String[] splitLine = line.split(" ");
-            if (line.contains("$ cd")) {
-                fileSystem.cd(splitLine[2]);
-            } else {
-                if (!line.equals("$ ls")) {
-                    if (line.contains("dir")) {
-                        fileSystem.addDirectoryToCurrentDirectory(splitLine[1]);
-                    } else {
-                        fileSystem.addFileToCurrentDirectory(splitLine[1], Integer.parseInt(splitLine[0]));
-                    }
-                }
-            }
+        fileSystem.readInput(input);
 
-        }
         return fileSystem.findSumOfValidDirectories();
+    }
+
+    public int solvePart2() {
+        FileSystem fileSystem = new FileSystem();
+
+        fileSystem.readInput(input);
+
+        final List<Integer> sortedDirectories = fileSystem.fetchDirectoriesInAscendingOrder();
+
+        final Integer totalSizeOfDir = sortedDirectories.get(sortedDirectories.size() - 1);
+        final Integer totalSizeOfDisk = 70000000;
+        final Integer currentUnusedSpace = totalSizeOfDisk - totalSizeOfDir;
+        final Integer spaceNeededToFreeUp = 30000000 - currentUnusedSpace;
+        return sortedDirectories.stream().filter(directory -> directory > spaceNeededToFreeUp).findFirst().get();
     }
 
     public class FileSystem {
@@ -39,6 +43,23 @@ public class DaySeven {
             final Directory rootDir = new Directory("/");
             rootDirectory = rootDir;
             currentDirectory = rootDir;
+        }
+
+        public void readInput(List<String> input) {
+            for (String line : input) {
+                final String[] splitLine = line.split(" ");
+                if (line.contains("$ cd")) {
+                    cd(splitLine[2]);
+                } else {
+                    if (!line.equals("$ ls")) {
+                        if (line.contains("dir")) {
+                            addDirectoryToCurrentDirectory(splitLine[1]);
+                        } else {
+                            addFileToCurrentDirectory(splitLine[1], Integer.parseInt(splitLine[0]));
+                        }
+                    }
+                }
+            }
         }
 
         public void cd(String directoryName) {
@@ -66,6 +87,15 @@ public class DaySeven {
             directoryToSize.put(rootDirectory, total);
 
             return directoryToSize.values().stream().filter(size -> size < 100000).mapToInt(i -> i).sum();
+        }
+
+        public List<Integer> fetchDirectoriesInAscendingOrder() {
+            Map<Directory, Integer> directoryToSize = new HashMap<>();
+
+            final int total = findTotalSizeAtDirectoryLevel(rootDirectory, directoryToSize);
+            directoryToSize.put(rootDirectory, total);
+
+            return directoryToSize.values().stream().sorted().toList();
         }
 
         public int findTotalSizeAtDirectoryLevel(Directory directory, Map<Directory, Integer> result) {
