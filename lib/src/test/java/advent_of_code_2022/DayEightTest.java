@@ -27,7 +27,7 @@ class DayEightTest {
     }
 
     @Test
-    void solvePart2() {
+    void solvePartExample2() {
         DayEight dayEight = new DayEight(List.of(
                 "30373",
                 "25512",
@@ -36,5 +36,11 @@ class DayEightTest {
                 "35390"
         ));
         assertThat(dayEight.solvePart2()).isEqualTo(8);
+    }
+
+    @Test
+    void solvePart2() {
+        DayEight dayEight = new DayEight(Utils.readInputLinesFromFile("day_eight.txt"));
+        assertThat(dayEight.solvePart2()).isEqualTo(672280);
     }
 }
