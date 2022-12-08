@@ -1,6 +1,7 @@
 package advent_of_code_2022;
 
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -67,42 +68,11 @@ public class DayEight {
         for (int y = 0; y < trees.length; y++) {
             for (int x = 0; x < trees[0].length; x++) {
                 int currentTreeHeight = trees[y][x];
-                int upwardsCount = 0;
-                for (int treeY = y - 1; treeY >= 0; treeY--) {
-                    if (trees[treeY][x] < currentTreeHeight) {
-                        upwardsCount++;
-                    } else if (trees[treeY][x] >= currentTreeHeight){
-                        upwardsCount++;
-                        break;
-                    }
-                }
-                int downwardsCount = 0;
-                for (int treeY = y + 1; treeY < trees.length; treeY++) {
-                    if (trees[treeY][x] < currentTreeHeight) {
-                        downwardsCount++;
-                    } else if (trees[treeY][x] >= currentTreeHeight){
-                        downwardsCount++;
-                        break;
-                    }
-                }
-                int leftwardsCount = 0;
-                for (int treeX = x - 1; treeX >= 0; treeX--) {
-                    if (trees[y][treeX] < currentTreeHeight) {
-                        leftwardsCount++;
-                    } else if (trees[y][treeX] >= currentTreeHeight){
-                        leftwardsCount++;
-                        break;
-                    }
-                }
-                int rightwardsCount = 0;
-                for (int treeX = x + 1; treeX < trees[y].length; treeX++) {
-                    if (trees[y][treeX] < currentTreeHeight) {
-                        rightwardsCount++;
-                    } else if (trees[y][treeX] >= currentTreeHeight){
-                        rightwardsCount++;
-                        break;
-                    }
-                }
+                int upwardsCount = getCountOverRange(currentTreeHeight, numbersBelow(y), List.of(x));
+                int downwardsCount = getCountOverRange(currentTreeHeight, numbersAbove(y), List.of(x));
+                int leftwardsCount = getCountOverRange(currentTreeHeight,List.of(y), numbersBelow(x));
+                int rightwardsCount = getCountOverRange(currentTreeHeight, List.of(y), numbersAbove(x));
+
                 int currentView = upwardsCount * downwardsCount * leftwardsCount * rightwardsCount;
                 if (currentView > maxView) {
                     maxView = currentView;
@@ -110,5 +80,37 @@ public class DayEight {
             }
         }
         return maxView;
+    }
+
+
+    private int getCountOverRange(int currentTreeHeight, List<Integer> yRange, List<Integer> xRange) {
+        int count = 0;
+        for (int treeY : yRange) {
+            for (int treeX : xRange) {
+                if (trees[treeY][treeX] < currentTreeHeight) {
+                    count++;
+                } else if (trees[treeY][treeX] >= currentTreeHeight) {
+                    count++;
+                    return count;
+                }
+            }
+        }
+        return count;
+    }
+
+    private List<Integer> numbersBelow(int startNumber) {
+        List<Integer> result = new ArrayList<>();
+        for (int i = startNumber - 1; i >= 0; i--) {
+            result.add(i);
+        }
+        return result;
+    }
+
+    private List<Integer> numbersAbove(int startNumber) {
+        List<Integer> result = new ArrayList<>();
+        for (int i = startNumber + 1; i < trees.length; i++) {
+            result.add(i);
+        }
+        return result;
     }
 }
