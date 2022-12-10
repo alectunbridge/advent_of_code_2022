@@ -27,6 +27,27 @@ class DayNineTest {
     @Test
     void solvePart1() {
         DayNine dayNine = new DayNine(Utils.readInputLinesFromFile("day_nine.txt"));
-        assertThat(dayNine.solvePart1()).isEqualTo(1698);
+        assertThat(dayNine.solvePart1()).isEqualTo(6236);
+    }
+
+    @Test
+    void solvePart2Example() {
+        DayNine dayNine = new DayNine(List.of(
+                "R 5",
+                "U 8",
+                "L 8",
+                "D 3",
+                "R 17",
+                "D 10",
+                "L 25",
+                "U 20"
+        ));
+        assertThat(dayNine.solvePart2()).isEqualTo(36);
+    }
+
+    @Test
+    void solvePart2() {
+        DayNine dayNine = new DayNine(Utils.readInputLinesFromFile("day_nine.txt"));
+        assertThat(dayNine.solvePart2()).isEqualTo(2449);
     }
 }
