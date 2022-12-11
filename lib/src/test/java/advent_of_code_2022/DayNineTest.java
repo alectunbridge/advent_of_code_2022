@@ -32,7 +32,24 @@ class DayNineTest {
     }
 
     @Test
-    void part2Example() {
+    void part2ExampleSmall() {
+        DayNine part2Example = new DayNine(Arrays.asList(
+                "R 4",
+                "U 4",
+                "L 3",
+                "D 1",
+                "R 4",
+                "D 1",
+                "L 5",
+                "R 2"
+        ));
+        int result = part2Example.solvePart2();
+        System.out.println(part2Example.getTailPositions());
+        assertThat(result).isEqualTo(1);
+    }
+    
+    @Test
+    void part2ExampleLarge() {
         DayNine part2Example = new DayNine(Arrays.asList(
                 "R 5",
                 "U 8",
@@ -47,8 +64,7 @@ class DayNineTest {
         System.out.println(part2Example.getTailPositions());
         assertThat(result).isEqualTo(36);
     }
-        
-
+    
     public static void main(String[] args) {
         DayNine dayNine = new DayNine(Arrays.asList(
                 "R 4",

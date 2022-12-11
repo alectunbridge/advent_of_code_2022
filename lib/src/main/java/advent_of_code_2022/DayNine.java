@@ -8,6 +8,19 @@ class CoordDayNine {
         this.x = x;
         this.y = y;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        CoordDayNine that = (CoordDayNine) o;
+        return x == that.x && y == that.y;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(x, y);
+    }
 }
 
 class DayNine {
@@ -66,9 +79,23 @@ class DayNine {
                 knots.get(0).x += xDelta;
                 knots.get(0).y += yDelta;
 
-                for (int index = 0; index < knots.size() - 1; index++) {
+                    for (int index = 0; index < knots.size() - 1; index++) {
                     moveTail(knots.get(index), knots.get(index + 1));
                 }
+
+                for (int y = 5; y >= 0 ; y--) {
+                    for (int x = 0; x < 6; x++) {
+                        CoordDayNine currentPosition = new CoordDayNine(x, y);
+                        if(knots.contains(currentPosition)){
+                            System.out.print(knots.indexOf(currentPosition));
+                        } else {
+                            System.out.print(".");
+                        }
+                    }
+                    System.out.println();
+                }
+                System.out.println();
+                
 
                 tailPositions.add("" + knots.get(knots.size() - 1).x + "," + knots.get(knots.size() - 1).y);
 
