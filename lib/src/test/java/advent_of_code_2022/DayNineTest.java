@@ -64,6 +64,13 @@ class DayNineTest {
         System.out.println(part2Example.getTailPositions());
         assertThat(result).isEqualTo(36);
     }
+
+    @Test
+    void solvePart2(){
+        DayNine part2 = new DayNine(Utils.readInputLinesFromFile("day_nine.txt"));
+        int result = part2.solvePart2();
+        assertThat(result).isEqualTo(2717);
+    }
     
     public static void main(String[] args) {
         DayNine dayNine = new DayNine(Arrays.asList(
@@ -86,9 +93,6 @@ class DayNineTest {
         assert result == 6522 : "part one expected ? but was " + result;
 
 
-        DayNine part2 = new DayNine(Utils.readInputLinesFromFile("day_nine.txt"));
-        result = part2.solvePart2();
-        assert result == 0 : "part two expected ? but was " + result;
 
     }
 }

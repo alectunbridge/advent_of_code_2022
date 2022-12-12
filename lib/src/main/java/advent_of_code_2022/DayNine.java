@@ -1,6 +1,7 @@
 package advent_of_code_2022;
 
 import java.util.*;
+
 class CoordDayNine {
     int x, y;
 
@@ -11,8 +12,10 @@ class CoordDayNine {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o)
+            return true;
+        if (o == null || getClass() != o.getClass())
+            return false;
         CoordDayNine that = (CoordDayNine) o;
         return x == that.x && y == that.y;
     }
@@ -73,29 +76,27 @@ class DayNine {
                     break;
             }
 
-
             for (int step = 0; step < Integer.parseInt(tokens[1]); step++) {
 
                 knots.get(0).x += xDelta;
                 knots.get(0).y += yDelta;
 
-                    for (int index = 0; index < knots.size() - 1; index++) {
+                for (int index = 0; index < knots.size() - 1; index++) {
                     moveTail(knots.get(index), knots.get(index + 1));
                 }
 
-                for (int y = 5; y >= 0 ; y--) {
-                    for (int x = 0; x < 6; x++) {
-                        CoordDayNine currentPosition = new CoordDayNine(x, y);
-                        if(knots.contains(currentPosition)){
-                            System.out.print(knots.indexOf(currentPosition));
-                        } else {
-                            System.out.print(".");
-                        }
-                    }
-                    System.out.println();
-                }
-                System.out.println();
-                
+                // for (int y = 5; y >= 0 ; y--) {
+                // for (int x = 0; x < 6; x++) {
+                // CoordDayNine currentPosition = new CoordDayNine(x, y);
+                // if(knots.contains(currentPosition)){
+                // System.out.print(knots.indexOf(currentPosition));
+                // } else {
+                // System.out.print(".");
+                // }
+                // }
+                // System.out.println();
+                // }
+                // System.out.println();
 
                 tailPositions.add("" + knots.get(knots.size() - 1).x + "," + knots.get(knots.size() - 1).y);
 
@@ -109,14 +110,16 @@ class DayNine {
     private void moveTail(CoordDayNine head, CoordDayNine tail) {
         int tailXDelta = (-tail.x + head.x) / 2;
         int tailYDelta = (-tail.y + head.y) / 2;
-        if (Math.abs(tailXDelta) == 1) {
+        if (Math.abs(tailXDelta) == 1 && tailYDelta == 0) {
             tail.y = head.y;
-        }
-        if (Math.abs(tailYDelta) == 1) {
+            tail.x += tailXDelta;
+        } else if (Math.abs(tailYDelta) == 1 && tailXDelta == 0) {
             tail.x = head.x;
+            tail.y += tailYDelta;
+        } else {
+            tail.x += tailXDelta;
+            tail.y += tailYDelta;
         }
-        tail.x += tailXDelta;
-        tail.y += tailYDelta;
     }
 
     public Set<String> getTailPositions() {
