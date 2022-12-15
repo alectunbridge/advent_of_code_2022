@@ -1,69 +1,76 @@
 package advent_of_code_2022;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-record CoordDayFifteen(int x, int y) {
-    CoordDayFifteen(String x, String y) {
-        this(Integer.parseInt(x), Integer.parseInt(y));
+record CoordDayFifteen(int x, int y, int distance) {
+    CoordDayFifteen(String x, String y, int distance) {
+        this(Integer.parseInt(x), Integer.parseInt(y), distance);
+    }
+
+    CoordDayFifteen(int x, int y) {
+        this(x, y, 0);
     }
 }
 
 public class DayFifteen {
-
-    private final List<String> input;
     private Set<CoordDayFifteen> blankCoords;
     private List<CoordDayFifteen> sensors;
     private List<CoordDayFifteen> beacons;
     private int maxDistance;
     private int minSensorX;
     private int maxSensorX;
+    private int minSensorY;
+    private int maxSensorY;
 
     public DayFifteen(List<String> input) {
-        this.input = input;
         blankCoords = new HashSet<>();
         sensors = new ArrayList<>();
         beacons = new ArrayList<>();
         maxDistance = Integer.MIN_VALUE;
         minSensorX = Integer.MAX_VALUE;
         maxSensorX = Integer.MIN_VALUE;
-    }
 
-    public int solvePart1(int rowIndex) {
         Pattern inputPattern = Pattern.compile("Sensor at x=(-?\\d+), y=(-?\\d+): closest beacon is at x=(-?\\d+), y=(-?\\d+)");
         for (String line : input) {
             Matcher lineMatcher = inputPattern.matcher(line);
             if (lineMatcher.matches()) {
-                CoordDayFifteen sensor = new CoordDayFifteen(lineMatcher.group(1), lineMatcher.group(2));
-                sensors.add(sensor);
-                CoordDayFifteen beacon = new CoordDayFifteen(lineMatcher.group(3), lineMatcher.group(4));
+
+                CoordDayFifteen beacon = new CoordDayFifteen(lineMatcher.group(3), lineMatcher.group(4), 0);
                 beacons.add(beacon);
-//                blankCoords.addAll(coordsWithinDistance(sensor, beacon));
+                CoordDayFifteen sensor = new CoordDayFifteen(lineMatcher.group(1), lineMatcher.group(2),
+                        manhattanDistance(new CoordDayFifteen(lineMatcher.group(1), lineMatcher.group(2), 0), beacon));
+                sensors.add(sensor);
                 int distance = manhattanDistance(sensor, beacon);
                 if (distance > maxDistance) {
                     maxDistance = distance;
                 }
-                if (sensor.x()<minSensorX){
+                if (sensor.x() < minSensorX) {
                     minSensorX = sensor.x();
                 }
-                if (sensor.x()>maxSensorX){
+                if (sensor.x() > maxSensorX) {
                     maxSensorX = sensor.x();
                 }
+                if (sensor.y() < minSensorY) {
+                    minSensorY = sensor.y();
+                }
+                if (sensor.y() > maxSensorY) {
+                    maxSensorY = sensor.y();
+                }
+
             } else {
                 throw new IllegalArgumentException("input line doesn't match: " + line);
             }
 
         }
+    }
 
-
-        for (int x = minSensorX - maxDistance; x <= maxSensorX + maxDistance ; x++) {
+    public int solvePart1(int rowIndex) {
+        for (int x = minSensorX - maxDistance; x <= maxSensorX + maxDistance; x++) {
             for (int i = 0; i < sensors.size(); i++) {
-                CoordDayFifteen inspectionCoord = new CoordDayFifteen(x, rowIndex);
-                if(manhattanDistance(sensors.get(i),beacons.get(i)) >= manhattanDistance(sensors.get(i), inspectionCoord)){
+                CoordDayFifteen inspectionCoord = new CoordDayFifteen(x, rowIndex, 0);
+                if (manhattanDistance(sensors.get(i), beacons.get(i)) >= manhattanDistance(sensors.get(i), inspectionCoord)) {
                     blankCoords.add(inspectionCoord);
                 }
             }
@@ -71,8 +78,40 @@ public class DayFifteen {
 
         blankCoords.removeAll(sensors);
         blankCoords.removeAll(beacons);
-        
-        return (int) blankCoords.size();
+
+        return blankCoords.size();
+    }
+
+    public long solvePart2(int maxCoord) {
+        Set<CoordDayFifteen> perimeters = new HashSet<>();
+        for (CoordDayFifteen sensor : sensors) {
+            perimeters.addAll(calculatePerimeter(sensor));
+        }
+
+        for (CoordDayFifteen coord : perimeters) {
+            if (coord.x() >= 0 && coord.x() <= maxCoord && coord.y() >= 0 && coord.y() <= maxCoord) {
+                int sensorCount = 0;
+                for (CoordDayFifteen otherSensor : sensors) {
+                    if (manhattanDistance(otherSensor, coord) > otherSensor.distance()) {
+                        sensorCount++;
+                    }
+                }
+                if (sensorCount == sensors.size()) {
+                    return coord.x() * 4000000L + coord.y();
+                }
+            }
+        }
+        return 0;
+    }
+
+    public Set<CoordDayFifteen> calculatePerimeter(CoordDayFifteen sensor) {
+        Set<CoordDayFifteen> result = new HashSet<>();
+        for (int yOffset = -sensor.distance() - 1; yOffset <= sensor.distance() + 1; yOffset++) {
+            int remainingOffset = sensor.distance() - Math.abs(yOffset) + 1;
+            result.add(new CoordDayFifteen(sensor.x() - remainingOffset, sensor.y() + yOffset));
+            result.add(new CoordDayFifteen(sensor.x() + remainingOffset, sensor.y() + yOffset));
+        }
+        return result;
     }
 
     public Set<CoordDayFifteen> coordsWithinDistance(CoordDayFifteen sensor, CoordDayFifteen beacon) {
@@ -81,7 +120,7 @@ public class DayFifteen {
         for (int yOffset = -distanceToBeacon; yOffset <= distanceToBeacon; yOffset++) {
             int remainingOffset = distanceToBeacon - Math.abs(yOffset);
             for (int xOffset = -remainingOffset; xOffset <= remainingOffset; xOffset++) {
-                result.add(new CoordDayFifteen(sensor.x() + xOffset, sensor.y() + yOffset));
+                result.add(new CoordDayFifteen(sensor.x() + xOffset, sensor.y() + yOffset, 0));
             }
         }
         return result;
