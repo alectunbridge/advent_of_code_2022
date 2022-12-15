@@ -4,6 +4,15 @@ import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+record Range(int start, int end) {
+    public Range merge(Range otherRange) {
+        if (otherRange.start() <= end + 1) {
+            return new Range(start, Integer.max(end, otherRange.end()));
+        }
+        return null;
+    }
+}
+
 record CoordDayFifteen(int x, int y, int distance) {
     CoordDayFifteen(String x, String y, int distance) {
         this(Integer.parseInt(x), Integer.parseInt(y), distance);
@@ -102,6 +111,36 @@ public class DayFifteen {
             }
         }
         return 0;
+    }
+
+    public long solvePart2WithRanges(int maxCoord) {
+        for (int y = 0; y <= maxCoord; y++) {
+            List<Range> ranges = new ArrayList<>();
+            for (CoordDayFifteen sensor : sensors) {
+                int remainingDistance = sensor.distance() - Math.abs(-sensor.y() + y);
+                if (remainingDistance < 0) {
+                    continue;
+                }
+                int xMin = sensor.x() - remainingDistance;
+                if (xMin < 0) {
+                    xMin = 0;
+                }
+                int xMax = sensor.x() + remainingDistance;
+                if (xMax > maxCoord) {
+                    xMax = maxCoord;
+                }
+                ranges.add(new Range(xMin, xMax));
+            }
+            ranges.sort(Comparator.comparing(Range::start).thenComparing(Range::end));
+            Range mergedRange = new Range(0, 0);
+            for (int rangeIndex = 0; rangeIndex < ranges.size(); rangeIndex++) {
+                mergedRange = mergedRange.merge(ranges.get(rangeIndex));
+                if (mergedRange == null) {
+                    return (ranges.get(rangeIndex).start() - 1) * 4000000L + y;
+                }
+            }
+        }
+        throw new IllegalArgumentException("We should never get here");
     }
 
     public Set<CoordDayFifteen> calculatePerimeter(CoordDayFifteen sensor) {

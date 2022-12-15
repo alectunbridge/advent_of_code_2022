@@ -51,7 +51,7 @@ public class DayFifteenTest {
                 "Sensor at x=20, y=1: closest beacon is at x=15, y=3"
         ));
 
-        assertThat(dayFifteen.solvePart2(20)).isEqualTo(56000011);
+        assertThat(dayFifteen.solvePart2WithRanges(20)).isEqualTo(56000011);
     }
 
     @Test
@@ -84,7 +84,7 @@ public class DayFifteenTest {
     @Test
     void solvePart2() {
         DayFifteen dayFifteen = new DayFifteen(Utils.readInputLinesFromFile("day_fifteen.txt"));
-        assertThat(dayFifteen.solvePart2(4000000)).isEqualTo(12625383204261L);
+        assertThat(dayFifteen.solvePart2WithRanges(4000000)).isEqualTo(12625383204261L);
     }
 
     @Test
