@@ -28,7 +28,6 @@ public class DaySixteen {
     private final List<Valve> valves = new ArrayList<>();
     private final List<Edge> edges = new ArrayList<>();
     private final Integer[][] distances;
-    private int maxFlow = 0;
 
     public DaySixteen(List<String> input) {
         Pattern inputPattern = Pattern.compile("Valve (..) has flow rate=(\\d+); tunnels? leads? to valves? (.*)");
@@ -96,13 +95,11 @@ public class DaySixteen {
         int timeRemaining = 30;
         int totalFlow = 0;
         int currentNodeIndex = getNodeIndex("AA");
-        walkGraph(currentNodeIndex, timeRemaining, totalFlow, new HashSet<>());
-
-        return maxFlow;
+        return walkGraph(currentNodeIndex, timeRemaining, totalFlow, new HashSet<>());
     }
 
-    private void walkGraph(int currentNodeIndex, int timeRemaining, int totalFlow, HashSet<Integer> visitedIndexes) {
-        maxFlow = Integer.max(totalFlow, maxFlow);
+    private int walkGraph(int currentNodeIndex, int timeRemaining, int totalFlow, HashSet<Integer> visitedIndexes) {
+        int maxFlowFromKids = 0;
         for (int childNodeIndex = 0; childNodeIndex < distances.length; childNodeIndex++) {
             if (distances[currentNodeIndex][childNodeIndex] != null
                     && !visitedIndexes.contains(childNodeIndex)) {
@@ -110,13 +107,17 @@ public class DaySixteen {
                 if (timeRemaining >= timeToGetToAndOpenValve) {
                     HashSet<Integer> newVisitedIndexes = new HashSet<>(visitedIndexes);
                     newVisitedIndexes.add(childNodeIndex);
-                    walkGraph(childNodeIndex,
+                    int newFlow = walkGraph(childNodeIndex,
                             timeRemaining - timeToGetToAndOpenValve,
                             totalFlow + (timeRemaining - timeToGetToAndOpenValve) * valves.get(childNodeIndex).flowRate,
                             newVisitedIndexes
                     );
+                    if(newFlow > maxFlowFromKids){
+                        maxFlowFromKids = newFlow;
+                    }
                 }
             }
         }
+        return Integer.max(maxFlowFromKids,totalFlow);
     }
 }
