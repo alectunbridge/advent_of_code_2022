@@ -1,9 +1,6 @@
 package advent_of_code_2022;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -31,6 +28,7 @@ public class DaySixteen {
     private final List<Valve> valves = new ArrayList<>();
     private final List<Edge> edges = new ArrayList<>();
     private final Integer[][] distances;
+    private int maxFlow = 0;
 
     public DaySixteen(List<String> input) {
         Pattern inputPattern = Pattern.compile("Valve (..) has flow rate=(\\d+); tunnels? leads? to valves? (.*)");
@@ -85,35 +83,40 @@ public class DaySixteen {
     }
 
     public int solvePart1() {
-        // calculate values of nodes
+
+        //eliminate zero flow valves
+        for (int i = 0; i < valves.size(); i++) {
+            if (valves.get(i).flowRate == 0) {
+                for (int j = 0; j < distances.length; j++) {
+                    distances[j][i] = null;
+                }
+            }
+        }
+
         int timeRemaining = 30;
         int totalFlow = 0;
         int currentNodeIndex = getNodeIndex("AA");
+        walkGraph(currentNodeIndex, timeRemaining, totalFlow, new HashSet<>());
 
-        while(timeRemaining>0) {
-            System.out.println(currentNodeIndex);
-            for (int i = 0; i < distances.length; i++) {
-                distances[i][currentNodeIndex] = null;
-            }
-            Integer[] availableFlows = new Integer[valves.size()];
-            for (int toIndex = 0; toIndex < valves.size(); toIndex++) {
-                Integer timeToGetThere = distances[currentNodeIndex][toIndex];
-                if (timeToGetThere != null && timeRemaining >= timeToGetThere + 1) {
-                    availableFlows[toIndex] = (timeRemaining - timeToGetThere - 1) * valves.get(toIndex).flowRate;
+        return maxFlow;
+    }
+
+    private void walkGraph(int currentNodeIndex, int timeRemaining, int totalFlow, HashSet<Integer> visitedIndexes) {
+        maxFlow = Integer.max(totalFlow, maxFlow);
+        for (int childNodeIndex = 0; childNodeIndex < distances.length; childNodeIndex++) {
+            if (distances[currentNodeIndex][childNodeIndex] != null
+                    && !visitedIndexes.contains(childNodeIndex)) {
+                int timeToGetToAndOpenValve = distances[currentNodeIndex][childNodeIndex] + 1;
+                if (timeRemaining >= timeToGetToAndOpenValve) {
+                    HashSet<Integer> newVisitedIndexes = new HashSet<>(visitedIndexes);
+                    newVisitedIndexes.add(childNodeIndex);
+                    walkGraph(childNodeIndex,
+                            timeRemaining - timeToGetToAndOpenValve,
+                            totalFlow + (timeRemaining - timeToGetToAndOpenValve) * valves.get(childNodeIndex).flowRate,
+                            newVisitedIndexes
+                    );
                 }
             }
-
-            int maxFlow = Arrays.stream(availableFlows).filter(Objects::nonNull).mapToInt(Integer::valueOf).max().orElse(0);
-            int destinationNodeIndex;
-            for (destinationNodeIndex = 0; destinationNodeIndex < availableFlows.length; destinationNodeIndex++) {
-                if (availableFlows[destinationNodeIndex] != null && availableFlows[destinationNodeIndex] == maxFlow) {
-                    break;
-                }
-            }
-            totalFlow += maxFlow;
-            timeRemaining -= distances[currentNodeIndex][destinationNodeIndex] + 1;
-            currentNodeIndex = destinationNodeIndex;
         }
-        return totalFlow;
     }
 }

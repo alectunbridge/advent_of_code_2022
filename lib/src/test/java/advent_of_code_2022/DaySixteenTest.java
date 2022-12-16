@@ -25,4 +25,10 @@ public class DaySixteenTest {
         
         assertThat(daySixteen.solvePart1()).isEqualTo(1651);
     }
+
+    @Test
+    void part1() {
+        DaySixteen daySixteen = new DaySixteen(Utils.readInputLinesFromFile("day_sixteen.txt"));
+        assertThat(daySixteen.solvePart1()).isEqualTo(2056);
+    }
 }
