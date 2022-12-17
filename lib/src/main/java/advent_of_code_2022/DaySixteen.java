@@ -1,5 +1,6 @@
 package advent_of_code_2022;
 
+
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -7,6 +8,8 @@ import java.util.regex.Pattern;
 
 record Edge(String from, String to) {
 }
+
+record Path(Set<Integer> nodes, int flow){};
 
 class Valve {
     String name;
@@ -28,6 +31,7 @@ public class DaySixteen {
     private final List<Valve> valves = new ArrayList<>();
     private final List<Edge> edges = new ArrayList<>();
     private final Integer[][] distances;
+    private Set<Path> paths = new HashSet<>();
 
     public DaySixteen(List<String> input) {
         Pattern inputPattern = Pattern.compile("Valve (..) has flow rate=(\\d+); tunnels? leads? to valves? (.*)");
@@ -95,11 +99,12 @@ public class DaySixteen {
         int timeRemaining = 30;
         int totalFlow = 0;
         int currentNodeIndex = getNodeIndex("AA");
-        return walkGraph(currentNodeIndex, timeRemaining, totalFlow, new HashSet<>());
+        walkGraph(currentNodeIndex, timeRemaining, totalFlow, new HashSet<>());
+        return paths.stream().mapToInt(Path::flow).max().getAsInt();
     }
 
-    private int walkGraph(int currentNodeIndex, int timeRemaining, int totalFlow, HashSet<Integer> visitedIndexes) {
-        int maxFlowFromKids = 0;
+    private void walkGraph(int currentNodeIndex, int timeRemaining, int totalFlow, HashSet<Integer> visitedIndexes) {
+        paths.add(new Path(visitedIndexes, totalFlow));
         for (int childNodeIndex = 0; childNodeIndex < distances.length; childNodeIndex++) {
             if (distances[currentNodeIndex][childNodeIndex] != null
                     && !visitedIndexes.contains(childNodeIndex)) {
@@ -107,17 +112,47 @@ public class DaySixteen {
                 if (timeRemaining >= timeToGetToAndOpenValve) {
                     HashSet<Integer> newVisitedIndexes = new HashSet<>(visitedIndexes);
                     newVisitedIndexes.add(childNodeIndex);
-                    int newFlow = walkGraph(childNodeIndex,
+                    walkGraph(childNodeIndex,
                             timeRemaining - timeToGetToAndOpenValve,
                             totalFlow + (timeRemaining - timeToGetToAndOpenValve) * valves.get(childNodeIndex).flowRate,
                             newVisitedIndexes
                     );
-                    if(newFlow > maxFlowFromKids){
-                        maxFlowFromKids = newFlow;
-                    }
                 }
             }
         }
-        return Integer.max(maxFlowFromKids,totalFlow);
+    }
+
+    public int solvePart2() {
+        //eliminate zero flow valves
+        for (int i = 0; i < valves.size(); i++) {
+            if (valves.get(i).flowRate == 0) {
+                for (int j = 0; j < distances.length; j++) {
+                    distances[j][i] = null;
+                }
+            }
+        }
+        int timeRemaining = 26;
+        int currentNodeIndex = getNodeIndex("AA");
+        walkGraph(currentNodeIndex, timeRemaining,0, new HashSet<>());
+        
+        Map<Set<Integer>,Path> rationalisedPaths = new HashMap<>();
+        
+        for(Path path:paths){
+            Path existingPath = rationalisedPaths.get(path.nodes());
+            if(existingPath == null || path.flow() > existingPath.flow()){
+                rationalisedPaths.put(path.nodes(),path);
+            }
+        }
+        
+        int maxFlow = 0;
+ 
+        for(Path path1: rationalisedPaths.values()){
+            for(Path path2: rationalisedPaths.values()){
+                if(path1.flow()+path2.flow() > maxFlow && Collections.disjoint(path1.nodes(),path2.nodes())){
+                    maxFlow = path1.flow() + path2.flow();
+                }
+            }
+        }
+        return maxFlow;
     }
 }
