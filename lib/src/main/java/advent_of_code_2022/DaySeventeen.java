@@ -4,8 +4,10 @@ import java.sql.Date;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 record Coord17(long x, long y) {
@@ -55,10 +57,14 @@ class Piece {
 
 }
 
+record State(long pieceIndex, long height) {
+}
+
 public class DaySeventeen {
     static final List<Piece> PIECES = new ArrayList<>();
     static Set<Coord17> deadPile = new HashSet<>();
     private List<String> input;
+    private long highPoint = 0;
 
     static {
         PIECES.add(new Piece(Set.of(new Coord17(0, 0), new Coord17(1, 0), new Coord17(2, 0), new Coord17(3, 0))));
@@ -74,14 +80,23 @@ public class DaySeventeen {
         this.input = input;
     }
 
-    public long solvePart1() {
+    public long solvePart1(long noOfPieces) {
         deadPile = new HashSet<>();
         int windIndex = 0;
         long pieceIndex = 0;
-        long highPoint = 0;
         String wind = input.get(0);
+        Map<String, State> states = new HashMap<>();
 
-        while (pieceIndex < 2022) {
+        while (pieceIndex < noOfPieces) {
+            String topOfTower = getTopOfTower();
+            State preExistingState = states.get(topOfTower);
+            if (preExistingState != null) {
+                System.out.println(
+                        pieceIndex + " " + (pieceIndex - preExistingState.pieceIndex()) + " " + (highPoint - preExistingState.height()));
+            } else {
+                states.put(topOfTower, new State(pieceIndex, highPoint));
+            }
+
             Piece currentPiece = PIECES.get((int) (pieceIndex++ % PIECES.size()));
             currentPiece.x = 2;
             currentPiece.y = highPoint + 3;
@@ -120,5 +135,19 @@ public class DaySeventeen {
 
         }
         return highPoint;
+    }
+
+    private String getTopOfTower() {
+        StringBuilder sb = new StringBuilder();
+        for (long y = highPoint; y > highPoint - 50; y--) {
+            for (long x = 0; x < 7; x++) {
+                if(deadPile.contains(new Coord17(x, y))){
+                    sb.append("#");
+                } else {
+                    sb.append(".");
+                }
+            }
+        }
+        return sb.toString();
     }
 }
