@@ -27,6 +27,6 @@ public class DayTwentyFourTest {
     @Test
     void part1(){
         DayTwentyFour dayTwentyFour = new DayTwentyFour(Utils.readInputLinesFromFile("day_twenty_four.txt"));
-        assertThat(dayTwentyFour.solvePart1(new Coord24(0,-1),1)).isEqualTo(0);
+        assertThat(dayTwentyFour.solvePart1(new Coord24(0,-1),1)).isEqualTo(264);
     }
 }

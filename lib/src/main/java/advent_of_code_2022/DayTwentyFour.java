@@ -48,8 +48,8 @@ public class DayTwentyFour {
         }
         width = leftWind[0].length;
         height = leftWind.length;
-        bestTime = 509;
-        timeMap = new int[height][width][width*height];
+        bestTime = Integer.MAX_VALUE;
+        timeMap = new int[height][width][width];
         for (int tmY = 0; tmY < height; tmY++) {
             for (int tmX = 0; tmX < width; tmX++) {
                 Arrays.fill(timeMap[tmY][tmX], Integer.MAX_VALUE);
@@ -63,7 +63,7 @@ public class DayTwentyFour {
             return bestTime;
         }
         if (position.equals(end)) {
-            System.out.println("end: " + time + ' ' + count / (width*height*width*height));
+            System.out.println("end: " + time + ' ' + count / (width*height*width));
             if (time < bestTime) {
                 bestTime = time;
             }
@@ -71,10 +71,10 @@ public class DayTwentyFour {
         }
 
         if (!start.equals(position)) {
-            if (timeMap[position.y()][position.x()][time % (width*height)] < time) {
+            if (timeMap[position.y()][position.x()][time % (width)] <= time) {
                 return bestTime;
             } else {
-                timeMap[position.y()][position.x()][time % (width*height)] = time;
+                timeMap[position.y()][position.x()][time % (width)] = time;
                 count++;
             }
         }
