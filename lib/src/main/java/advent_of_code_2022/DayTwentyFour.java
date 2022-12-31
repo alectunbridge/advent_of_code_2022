@@ -1,12 +1,6 @@
 package advent_of_code_2022;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 record Coord24(int x, int y) {
     @Override
@@ -17,6 +11,7 @@ record Coord24(int x, int y) {
 
 public class DayTwentyFour {
 
+    private Comparator<Coord24> distanceComparator;
     private Coord24 start = null;
     private Coord24 end = null;
     private boolean[][] leftWind;
@@ -56,6 +51,7 @@ public class DayTwentyFour {
             }
         }
         count = 0;
+        distanceComparator = Comparator.comparingInt((Coord24 c) -> c.x() + c.y()).reversed();
     }
 
     public int solvePart1(Coord24 position, int time) {
@@ -96,7 +92,7 @@ public class DayTwentyFour {
 
         for (Iterator<Coord24> it = result.iterator(); it.hasNext();) {
             Coord24 coord = it.next();
-            if (coord.equals(end)) {
+            if ((coord.equals(start) && coord.equals(position)) || coord.equals(end)) {
                 continue;
             }
             if (coord.x() < 0 || coord.x() >= width || coord.y() < 0 || coord.y() >= height) {
@@ -123,8 +119,22 @@ public class DayTwentyFour {
             }
 
         }
-        result.sort(Comparator.comparingInt((Coord24 c) -> c.x() + c.y()).reversed());
+        result.sort(distanceComparator);
         return result;
     }
 
+    public void reverse() {
+        Coord24 tmp = start;
+        start = end;
+        end = tmp;
+        distanceComparator = distanceComparator.reversed();
+        bestTime = Integer.MAX_VALUE;
+        timeMap = new int[height][width][width];
+        for (int tmY = 0; tmY < height; tmY++) {
+            for (int tmX = 0; tmX < width; tmX++) {
+                Arrays.fill(timeMap[tmY][tmX], Integer.MAX_VALUE);
+            }
+        }
+        count = 0;
+    }
 }
